@@ -8,21 +8,26 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     const chainId = network.config.chainId
     let vrfCoordinatorV2
     console.log("Deploying Raffel contract...")
+    let subscriptionId;
 
     if (developmentChains.includes(network.name)) {
         const vrfCoordinatorV2Mock = await ethers.getContract("VRFCoordinatorV2Mock")
-        vrfCoordinatorV2 = vrfCoordinatorV2Mock.address
+       
+        vrfCoordinatorV2 = vrfCoordinatorV2Mock.target
         const transcationRespnse = await vrfCoordinatorV2Mock.createSubscription()
-        const transcationReceipt = await transcationRespnse.wait(1)
-        const event = transcationReceipt.events?.find((e) => e.event === "SubscriptionCreated")
+        
+        const transcationReceipt = await transcationRespnse.wait()
+        
+        const event = transcationReceipt.logs?.find((e) => e.topics[0] === "0x464722b4166576d3dcbba877b999bc35cf911f4eaf434b7eba68fa113951d0bf")
         if (!event) {
             throw new Error("SubscriptionCreated event not found!")
+            // console.log("still error")
         }
-        const subscriptionId = event.args.subId
+        subscriptionId = event.args.subId
 
         await vrfCoordinatorV2Mock.fundSubscription(subscriptionId, ethers.parseEther("2"))
     } else {
-        vrfCoordinatorV2 = networkConfig[chainId]["vrfCoordinatorV2 "]
+        vrfCoordinatorV2 = networkConfig[chainId]["vrfCoordinatorV2"]
         subscriptionId = networkConfig[chainId]["subscriptionId"]
     }
 
@@ -32,13 +37,15 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     const interval = networkConfig[chainId]["interval"]
 
     const args = [
-        vrfCoordinatorV2,
         entranceFee,
+        vrfCoordinatorV2,
         gasLane,
         subscriptionId,
         callbackGasLimit,
         interval,
     ]
+
+    console.log(args , "args")
     const raffle = await deploy("Raffel", {
         from: deployer,
         args: args,

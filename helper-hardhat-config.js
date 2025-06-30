@@ -15,7 +15,8 @@ const networkConfig={
         name: "hardhat",
         entranceFee: ethers.parseEther("0.01"), // 0.01 ETH
         gasLane:"0x8077df514608a09f83e4e8d300645594e5d7234665448ba83f51a50f842bd3d9",
-        callbackGasLimit: "500000"
+        callbackGasLimit: "500000",
+        interval : "30", // 30 seconds
     },
 }
 
