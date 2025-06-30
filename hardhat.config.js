@@ -5,6 +5,8 @@ require("solidity-coverage")
 require("hardhat-gas-reporter")
 require("hardhat-contract-sizer")
 require("dotenv").config()
+
+
 /** @type import('hardhat/config').HardhatUserConfig */
 
 module.exports = {
@@ -29,5 +31,12 @@ module.exports = {
         player: {
           default: 1, // here this will by default take the second account as player
         },
+    },
+    gasReporter: {
+        enabled: false,
+        currency: "USD",
+        outputFile: "gas-report.txt",
+        noColors: true,
+        coinmarketcap: process.env.COINMARKETCAP_API_KEY,
     },
 }

@@ -8,17 +8,21 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     const chainId = network.config.chainId
     let vrfCoordinatorV2
     console.log("Deploying Raffle contract...")
-    let subscriptionId;
+    let subscriptionId
 
     if (developmentChains.includes(network.name)) {
         const vrfCoordinatorV2Mock = await ethers.getContract("VRFCoordinatorV2Mock")
-       
+
         vrfCoordinatorV2 = vrfCoordinatorV2Mock.target
         const transcationRespnse = await vrfCoordinatorV2Mock.createSubscription()
-        
+
         const transcationReceipt = await transcationRespnse.wait()
-        
-        const event = transcationReceipt.logs?.find((e) => e.topics[0] === "0x464722b4166576d3dcbba877b999bc35cf911f4eaf434b7eba68fa113951d0bf")
+
+        const event = transcationReceipt.logs?.find(
+            (e) =>
+                e.topics[0] ===
+                "0x464722b4166576d3dcbba877b999bc35cf911f4eaf434b7eba68fa113951d0bf",
+        )
         if (!event) {
             throw new Error("SubscriptionCreated event not found!")
             // console.log("still error")
@@ -45,7 +49,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
         interval,
     ]
 
-    console.log(args , "args")
+    console.log(args, "args")
     const raffle = await deploy("Raffle", {
         from: deployer,
         args: args,
