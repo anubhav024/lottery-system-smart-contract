@@ -7,7 +7,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     const { deployer } = await getNamedAccounts()
     const chainId = network.config.chainId
     let vrfCoordinatorV2
-    console.log("Deploying Raffel contract...")
+    console.log("Deploying Raffle contract...")
     let subscriptionId;
 
     if (developmentChains.includes(network.name)) {
@@ -46,7 +46,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     ]
 
     console.log(args , "args")
-    const raffle = await deploy("Raffel", {
+    const raffle = await deploy("Raffle", {
         from: deployer,
         args: args,
         log: true,
@@ -58,5 +58,6 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
         await verify(raffle.address, args)
     }
 
-    // console.log(`Raffel contract deployed at address: ${raffle.address}`);
+    // console.log(`Raffle contract deployed at address: ${raffle.address}`);
 }
+module.exports.tags = ["all", "raffle"]
